@@ -5,6 +5,9 @@ from torchvision import transforms
 from PIL import Image
 import os
 
+# --- Streamlit UI ---
+st.set_page_config(page_title="ASL Classifier", page_icon="🤟")
+
 # --- Model Definition ---
 class ASL_Linear_Classifier(nn.Module):
     def __init__(self, input_size=784, hidden_size=256, num_classes=26):
@@ -53,9 +56,6 @@ transform = transforms.Compose([
     transforms.Resize((28, 28)),
     transforms.ToTensor(),
 ])
-
-# --- Streamlit UI ---
-st.set_page_config(page_title="ASL Classifier", page_icon="🤟")
 
 st.title("🤟 ASL Alphabet Classifier")
 st.write("Upload an image of an ASL hand sign to classify it!")
