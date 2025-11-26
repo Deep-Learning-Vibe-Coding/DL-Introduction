@@ -1,0 +1,8 @@
+# Streamlit APP
+# Streamlit, torch, torchvision, Pillow 설치
+# pip install -r requirements.txt
+
+streamlit==1.42.2
+torch==2.6.0
+torchvision==0.21.0
+Pillow==11.1.0

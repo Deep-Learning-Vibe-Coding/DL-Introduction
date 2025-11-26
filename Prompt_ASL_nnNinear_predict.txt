@@ -1,0 +1,5 @@
+# Predictin
+1. model_path(model)에 있는 학습된 모델(asl_ninear_classifier.pt) 를 load 한다. 2. 이모델을 사용하여 외부 디렉토리(data/asl_data) 이미지(a.png, b.png)를 분류한다. 3. 수정된 코드를 ASL_nnLinear_predict.ipynb 화일에 저장해줘
+
+# Streamlit APP
+1. ASL_nnLinear_predict.ipynb를 streamlit을 사용하여 UI를 바꾸는 것을 목표로 한다. 2. 읽기쉬고 간단하고 사용하기 쉬운 UI로 streamlit 예측 코드를 만들어줘  3. 최종 결과를 ASL_nnLinear_Streamlit.ipynb 화일에 저장해줘
