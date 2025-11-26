@@ -29,7 +29,7 @@ class ASL_Linear_Classifier(nn.Module):
 INPUT_SIZE = 28 * 28
 HIDDEN_SIZE = 256
 NUM_CLASSES = 26
-MODEL_PATH = "model/asl_linear_classifier.pt"
+MODEL_PATH = "asl_linear_classifier.pt"
 
 # --- Load Model ---
 @st.cache_resource
