@@ -1,66 +1,84 @@
+
 import json
+import os
 
-# Read the notebook
-with open(r'H:\내 드라이브\강의자료\Vibe_Coding\Plantar_Pressure\footprint_pressure_test.ipynb', 'r', encoding='utf-8') as f:
-    notebook = json.load(f)
+nb_path = '/Users/jhkim/Library/CloudStorage/GoogleDrive-jhkim3217@gmail.com/내 드라이브/강의자료/Vibe_Coding/gradient_descent_tutorial.ipynb'
 
-# Find the code cell and modify it
-for cell in notebook['cells']:
+if not os.path.exists(nb_path):
+    print(f"Error: File not found at {nb_path}")
+    exit(1)
+
+with open(nb_path, 'r', encoding='utf-8') as f:
+    nb = json.load(f)
+
+# 시각화 셀 찾아서 수정하기
+found_viz_cell = False
+for cell in nb['cells']:
     if cell['cell_type'] == 'code':
-        source = ''.join(cell['source'])
-        if 'pressure_heatmap.png' in source:
-            # Create new code that shows the original input heatmap
-            # We'll load the image and show it before any processing
-            new_code = """import cv2
-import numpy as np
-import matplotlib.pyplot as plt
+        source = "".join(cell['source'])
+        if "plt.title('Evolution of Regression Line')" in source:
+            # 새로운 시각화 코드로 교체 (색상 및 스타일 개선)
+            new_source = [
+                "import matplotlib.pyplot as plt\n",
+                "import numpy as np\n",
+                "\n",
+                "plt.figure(figsize=(15, 6))\n",
+                "\n",
+                "# 1. Loss 변화 그래프\n",
+                "plt.subplot(1, 2, 1)\n",
+                "plt.plot(losses, 'r-o')\n",
+                "plt.title('Change of Loss (Cost)')\n",
+                "plt.xlabel('Epoch')\n",
+                "plt.ylabel('Loss')\n",
+                "plt.grid(True)\n",
+                "\n",
+                "# 2. 회귀선 변화 그래프\n",
+                "plt.subplot(1, 2, 2)\n",
+                "plt.scatter(x_train, y_train, c='black', label='Data', s=100, zorder=10)\n",
+                "\n",
+                "# 주요 에포크의 선 그리기\n",
+                "epochs_to_plot = [0, 1, 3, 5, 10, 20]\n",
+                "x_range = np.linspace(0, 4, 100)\n",
+                "\n",
+                "# 색상 맵 변경 (coolwarm: 파랑 -> 빨강)\n",
+                "colors = plt.cm.coolwarm(np.linspace(0, 1, len(epochs_to_plot)))\n",
+                "\n",
+                "for i, ep in enumerate(epochs_to_plot):\n",
+                "    if ep < len(W_history):\n",
+                "        w_val = W_history[ep]\n",
+                "        b_val = b_history[ep]\n",
+                "        y_range = w_val * x_range + b_val\n",
+                "        \n",
+                "        # 선 스타일 및 투명도 조정\n",
+                "        if ep == 0:\n",
+                "            linestyle = '--' # 초기값은 점선\n",
+                "            alpha = 0.5\n",
+                "            label = f'Epoch {ep} (Start)'\n",
+                "        elif ep == epochs_to_plot[-1]:\n",
+                "            linestyle = '-'  # 최종값은 실선\n",
+                "            alpha = 1.0\n",
+                "            label = f'Epoch {ep} (End)'\n",
+                "        else:\n",
+                "            linestyle = '-'\n",
+                "            alpha = 0.7\n",
+                "            label = f'Epoch {ep}'\n",
+                "            \n",
+                "        plt.plot(x_range, y_range, label=label, color=colors[i], lw=2, linestyle=linestyle, alpha=alpha)\n",
+                "\n",
+                "plt.title('Evolution of Regression Line')\n",
+                "plt.legend()\n",
+                "plt.grid(True)\n",
+                "plt.show()"
+            ]
+            cell['source'] = new_source
+            found_viz_cell = True
+            break
 
-# Load the image
-frame = cv2.imread('pressure_heatmap.png')
+if not found_viz_cell:
+    print("Warning: Could not find the visualization cell to modify.")
 
-if frame is None:
-    print("Error: Could not load image")
-else:
-    # Convert BGR to RGB for matplotlib
-    frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-    
-    # Create the original input heatmap (before flattening)
-    # This is the raw heatmap without any flattening or equalization
-    original_input = frame.copy()
-    
-    # Create figure with 2 subplots
-    fig, axes = plt.subplots(1, 2, figsize=(15, 6))
-    
-    # Show original input (non-flattened)
-    original_rgb = cv2.cvtColor(original_input, cv2.COLOR_BGR2RGB)
-    axes[0].imshow(original_rgb)
-    axes[0].set_title('Original Input Heatmap\\n(평탄화되지 않은 원본 입력)', fontsize=14, pad=10)
-    axes[0].axis('off')
-    
-    # Show the same image again (or you can apply processing here)
-    axes[1].imshow(frame_rgb)
-    axes[1].set_title('Loaded Heatmap\\n(로드된 히트맵)', fontsize=14, pad=10)
-    axes[1].axis('off')
-    
-    plt.tight_layout()
-    plt.show()
-    
-    print("\\n=== Image Information ===")
-    print(f"Shape: {frame.shape}")
-    print(f"Data type: {frame.dtype}")
-    print(f"Min value: {frame.min()}")
-    print(f"Max value: {frame.max()}")
-"""
-            cell['source'] = new_code.split('\n')
-            cell['source'] = [line + '\n' for line in cell['source'][:-1]] + [cell['source'][-1]]
-            # Clear outputs
-            cell['outputs'] = []
-            cell['execution_count'] = None
+# 파일 저장
+with open(nb_path, 'w', encoding='utf-8') as f:
+    json.dump(nb, f, indent=1, ensure_ascii=False)
 
-# Save the modified notebook
-with open(r'H:\내 드라이브\강의자료\Vibe_Coding\Plantar_Pressure\footprint_pressure_test.ipynb', 'w', encoding='utf-8') as f:
-    json.dump(notebook, f, ensure_ascii=False, indent=1)
-
-print("✓ 노트북이 성공적으로 수정되었습니다!")
-print("✓ 이제 평탄화되지 않은 원본 입력 히트맵이 표시됩니다.")
-print("✓ Jupyter Notebook을 열어서 셀을 실행하세요.")
+print(f"Successfully modified {nb_path}")

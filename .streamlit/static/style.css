@@ -1,0 +1,30 @@
+/* Streamlit sidebar를 왼쪽으로 이동 */
+section[data-testid="stSidebar"] {
+    position: fixed !important;
+    left: 0 !important;
+    top: 0 !important;
+    height: 100vh !important;
+    z-index: 999 !important;
+}
+
+/* 메인 콘텐츠 영역을 오른쪽으로 이동하여 sidebar 공간 확보 */
+div[data-testid="stAppViewContainer"] > div:first-child {
+    margin-left: 21rem !important;
+}
+
+/* Streamlit의 기본 레이아웃 오버라이드 */
+.main .block-container {
+    padding-left: 2rem;
+}
+
+/* 모바일 반응형 처리 */
+@media (max-width: 768px) {
+    section[data-testid="stSidebar"] {
+        position: relative !important;
+    }
+    
+    div[data-testid="stAppViewContainer"] > div:first-child {
+        margin-left: 0 !important;
+    }
+}
+

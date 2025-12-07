@@ -8,6 +8,36 @@ import os
 # --- Streamlit UI ---
 st.set_page_config(page_title="ASL Classifier", page_icon="🤟")
 
+# Sidebar를 왼쪽으로 이동시키는 CSS
+st.markdown("""
+<style>
+    /* Sidebar를 왼쪽으로 이동 */
+    section[data-testid="stSidebar"] {
+        position: fixed !important;
+        left: 0 !important;
+        top: 0 !important;
+        height: 100vh !important;
+        z-index: 999 !important;
+    }
+    
+    /* 메인 콘텐츠 영역을 오른쪽으로 이동 */
+    div[data-testid="stAppViewContainer"] > div:first-child {
+        margin-left: 21rem !important;
+    }
+    
+    /* 모바일 반응형 처리 */
+    @media (max-width: 768px) {
+        section[data-testid="stSidebar"] {
+            position: relative !important;
+        }
+        
+        div[data-testid="stAppViewContainer"] > div:first-child {
+            margin-left: 0 !important;
+        }
+    }
+</style>
+""", unsafe_allow_html=True)
+
 # --- Model Definition ---
 class ASL_Linear_Classifier(nn.Module):
     def __init__(self, input_size=784, hidden_size=256, num_classes=26):
